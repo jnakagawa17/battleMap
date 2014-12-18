@@ -38,6 +38,9 @@
  */
 
 #include <MeggyJrSimple.h>    // Required code, line 1 of 2.
+int gameState = 2;
+int selected = 0;
+int hover = 0;
 
 int choice[6] = {1, 2, 3, 1, 2, 3};
 
@@ -115,14 +118,24 @@ void setup()                    // run once, when the sketch starts
 
 void loop()                     // run over and over again
 {
-  updateLocations();
-  DisplaySlate();
-
+  if (gameState == 2)
+  {
+    initializeLocations();
+    initializeStats();
+    initializeHealth();
+    DisplaySlate();
+    gameState = 3;
+  }
+  if (gameState == 3)
+  {
+    initializeLocations();
+    DisplaySlate();
+  }
 }
 
-void updateLocations()
+void initializeLocations()
 {
-  for (int i = 0; i < 6; i++)
+  for (int i = 0; i < 3; i++)
   {
     if (choice[i] == 1)
     {
@@ -143,7 +156,161 @@ void updateLocations()
       DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Green);
     }  
   }
+  for (int i = 3; i < 6; i++)
+  {
+    if (choice[i] == 1)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Red);
+    }
+    if (choice[i] == 2)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+    }    
+    if (choice[i] == 3)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Red);
+    }  
+  }
 }
 
+void initializeStats()
+{
+  for (int i = 0; i < 6; i++)
+  {
+    if (choice[i] == 1)
+    {
+      Locations[i].health = 8;
+      Locations[i].defense = 4;
+      Locations[i].attack = 2;
+      Locations[i].availability = 1;
+    }
+    if (choice[i] == 2)
+    {
+      Locations[i].health = 4;
+      Locations[i].defense = 1;
+      Locations[i].attack = 5;
+      Locations[i].availability = 1;
+    }    
+    if (choice[i] == 3)
+    {
+      Locations[i].health = 6;
+      Locations[i].defense = 3;
+      Locations[i].attack = 3;
+      Locations[i].availability = 1;
+    }  
+  }
+}
 
+void initializeHealth()
+{
+  if (choice[selected] == 1)
+  {
+    SetAuxLEDs(255); 
+  }
+  if (choice[selected] == 2)
+  {
+    SetAuxLEDs(15); 
+  }    
+  if (choice[selected] == 3)
+  {
+    SetAuxLEDs(63); 
+  }  
+}
+
+void selector()
+{
+  CheckButtonsDown();
+  if (Button_Right)
+  {
+    hover = hover + 3;
+    if (hover > 6)
+    {
+      hover = hover - 3;
+    }
+  }
+  if (Button_Left)
+  {
+    hover = hover - 3;
+    if (hover < 1)
+    {
+      hover = hover + 3;
+    }
+  }
+  if (Button_Up)
+  {
+    hover = hover - 1;
+    if (hover < 1)
+    {
+      hover = hover + 1;
+    }
+    if (hover == 3)
+    {
+      hover = 4;
+    }
+  }
+  if (Button_Down)
+  {
+    hover = hover + 1;
+    if (hover > 6)
+    {
+      hover = hover - 1;
+    }
+    if (hover == 4)
+    {
+      hover = 3;
+    }
+  }  
+}
+
+void blinker()
+{
+  for (int i = 0; i < 3; i++)
+  {
+    if (choice[i] == 1)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Green);
+    }
+    if (choice[i] == 2)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
+    }    
+    if (choice[i] == 3)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Green);
+    }  
+  }
+  for (int i = 3; i < 6; i++)
+  {
+    if (choice[i] == 1)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Red);
+    }
+    if (choice[i] == 2)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+    }    
+    if (choice[i] == 3)
+    {
+      DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+      DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Red);
+    }  
+  }
+}
 
