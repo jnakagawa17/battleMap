@@ -43,6 +43,7 @@ int hover = 0;
 int paused = 0;
 int savedState = 0;
 int lights = 0;
+int placeHolder = 0;
 
 int choice[6] = {1, 2, 3, 1, 2, 3};
 
@@ -141,7 +142,6 @@ void loop()                     // run over and over again
   }
   if (gameState == 3)
   {
-    Serial.print("Entered gamestate 3");
     selector();
     redisplay();
     updateHealth();
@@ -293,22 +293,19 @@ void selector()
     }
     if (hover > 2)
     {
-      selected[0] = hover;
+      selected[1] = hover;
     }
   }
 }
 
 void blinker()
 {
-  Serial.print("Entered blinker");
   if (hover < 3)
   {
     if (lights == 0)
     {
-      Serial.print("Entered lights true");
       if (choice[hover] == 1)
       {
-       Serial.print("Entered hover is 1");
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Green);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Green);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Green);
@@ -331,7 +328,6 @@ void blinker()
     }
     if (lights == 2)
     {
-    Serial.print("lights false");
       if (choice[hover] == 1)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
@@ -408,12 +404,10 @@ void blinker()
   }
   if (lights == 1)
   {
-    Serial.print("true to false");    
     lights = 2;
   }
   if (lights == 3)
   {
-    Serial.print("false to true");   
     lights = 0;
   }  
 }
@@ -458,12 +452,14 @@ void redisplay()
 {
   for (int i = 0; i < 3; i++)
   {
-    if (ReadPx(0, 3 * i + 1) == 0)
+    if (ReadPx(0, 7 - (3 * i)) == 0)
     {
+      Serial.print("isn't there");   
       if (selected[0] != i)
       {
         if (choice[i] == 1)
         {
+          Serial.print("draw 1");  
           DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
@@ -471,11 +467,13 @@ void redisplay()
         }
         if (choice[i] == 2)
         {
+          Serial.print("draw 2");  
           DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
         }    
         if (choice[i] == 3)
         {
+          Serial.print("draw 3");  
           DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
           DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Green);
@@ -485,7 +483,7 @@ void redisplay()
   }
   for (int i = 3; i < 6; i++)
   {
-    if (ReadPx(3, 3 * i - 8) == 0)
+    if (ReadPx(3, 16 - (3 * i)) == 0)
     {
       if (selected[1] != i)
       {
@@ -510,4 +508,5 @@ void redisplay()
       } 
     }
   }
+ DisplaySlate(); 
 }
