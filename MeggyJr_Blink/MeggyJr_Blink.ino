@@ -42,8 +42,10 @@ int gameState = 2;
 int hover = 0;
 int paused = 0;
 int savedState = 0;
-int lights = 0;
+int lightsHover = 0;
 int placeHolder = 0;
+
+int lightsToggle[2] = {0, 0};
 
 int choice[6] = {1, 2, 3, 1, 2, 3};
 
@@ -146,6 +148,8 @@ void loop()                     // run over and over again
     redisplay();
     updateHealth();
     blinker();
+    checkLights();
+    rotate();
     DisplaySlate();
     delay(500);
   }
@@ -287,13 +291,19 @@ void selector()
   CheckButtonsDown();
   if(Button_A)
   {
+    Serial.print("button A");   
+    Serial.print("");     
     if (hover < 3)
     {
       selected[0] = hover;
+      Serial.print(selected[0]);   
+      Serial.print("");  
     }
     if (hover > 2)
     {
       selected[1] = hover;
+      Serial.print(selected[1]);   
+      Serial.print(""); 
     }
   }
 }
@@ -302,7 +312,7 @@ void blinker()
 {
   if (hover < 3)
   {
-    if (lights == 0)
+    if (lightsHover == 0)
     {
       if (choice[hover] == 1)
       {
@@ -310,23 +320,23 @@ void blinker()
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Green);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Green);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Green);
-        lights = 1;
+        lightsHover = 1;
       }
       if (choice[hover] == 2)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Green);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Green);  
-        lights = 1;
+        lightsHover = 1;
       }
       if (choice[hover] == 3)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Green);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Green);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Green);
-        lights = 1;
+        lightsHover = 1;
       }
     }
-    if (lights == 2)
+    if (lightsHover == 2)
     {
       if (choice[hover] == 1)
       {
@@ -334,26 +344,26 @@ void blinker()
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0); 
-        lights = 3;
+        lightsHover = 3;
       }
       if (choice[hover] == 2)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);    
-        lights = 3;
+        lightsHover = 3;
       }
       if (choice[hover] == 3)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0); 
-        lights = 3;
+        lightsHover = 3;
       }
     }
   }
   if (hover > 2)
   {
-    if (lights == 0)
+    if (lightsHover == 0)
     {
       if (choice[hover] == 1)
       {
@@ -361,23 +371,23 @@ void blinker()
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Red);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Red);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Red);
-        lights = 1;
+        lightsHover = 1;
       }
       if (choice[hover] == 2)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Red);
-        lights = 1;
+        lightsHover = 1;
       }
       if (choice[hover] == 3)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Red);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Red);
-        lights = 1;
+        lightsHover = 1;
       }
     }
-    if (lights == 2)
+    if (lightsHover == 2)
     {
       if (choice[hover] == 1)
       {
@@ -385,30 +395,30 @@ void blinker()
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0);
-        lights = 3;
+        lightsHover = 3;
       }
       if (choice[hover] == 2)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);
-        lights = 3;
+        lightsHover = 3;
       }
       if (choice[hover] == 3)
       {
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
         DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
         DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0);
-        lights = 3;
+        lightsHover = 3;
       }
     }
   }
-  if (lights == 1)
+  if (lightsHover == 1)
   {
-    lights = 2;
+    lightsHover = 2;
   }
-  if (lights == 3)
+  if (lightsHover == 3)
   {
-    lights = 0;
+    lightsHover = 0;
   }  
 }
 
@@ -454,12 +464,10 @@ void redisplay()
   {
     if (ReadPx(0, 7 - (3 * i)) == 0)
     {
-      Serial.print("isn't there");   
       if (selected[0] != i)
       {
         if (choice[i] == 1)
-        {
-          Serial.print("draw 1");  
+        { 
           DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
@@ -467,13 +475,11 @@ void redisplay()
         }
         if (choice[i] == 2)
         {
-          Serial.print("draw 2");  
           DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
         }    
         if (choice[i] == 3)
         {
-          Serial.print("draw 3");  
           DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
           DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
           DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Green);
@@ -509,4 +515,154 @@ void redisplay()
     }
   }
  DisplaySlate(); 
+}
+
+void checkLights()
+{
+  for (int i = 0; i < 2; i++)
+  {
+    if (selected[i] < 7)
+    {
+      if (ReadPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y) == 0)
+      {
+        lightsToggle[i] = 0;
+      }
+      else
+      {
+        lightsToggle[i] = 2;
+      }
+    }
+  }
+}
+
+void rotate()
+{
+  for (int i = 0; i < 2; i++)
+  {
+    if (selected[i] < 7)
+    {
+      if (selected[i] != hover)
+      {
+        if (selected[i] < 3)
+        {
+          if (lightsToggle[i] == 0)
+          {
+            Serial.print("made it");   
+            Serial.print("");  
+            if (choice[selected[i]] == 1)
+            {
+              Serial.print("1");   
+              Serial.print(""); 
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Green);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, Green);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, Green);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, Green);
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 2)
+            {
+              Serial.print("2");   
+              Serial.print(""); 
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Green);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, Green);  
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 3)
+            {
+              Serial.print("3");   
+              Serial.print(selected[i]); 
+              Serial.print(i); 
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Green);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, Green);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, Green);
+              lightsToggle[i] = 1;
+            }
+          }
+          if (lightsToggle[i] == 2)
+          {
+            if (choice[selected[i]] == 1)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, 0);
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 2)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, 0);  
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 3)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, 0);
+              lightsToggle[i] = 1;
+            }
+          }
+        }
+        if (selected[i] > 2)
+        {
+          if (lightsToggle[i] == 0)
+          {
+            if (choice[selected[i]] == 1)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Red);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, Red);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, Red);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, Red);
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 2)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Red);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, Red);  
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 3)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Red);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, Red);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, Red);
+              lightsToggle[i] = 1;
+            }
+          }
+          if (lightsToggle[i] == 2)
+          {
+            if (choice[selected[i]] == 1)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, 0);
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 2)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, 0);  
+              lightsToggle[i] = 1;
+            }
+            if (choice[selected[i]] == 3)
+            {
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, 0);
+              DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, 0);
+              DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, 0);
+              lightsToggle[i] = 1;
+            }
+          }
+        }
+      }
+    }
+    if (lightsToggle[i] == 1)
+    {
+      lightsToggle[i] = 2;
+    }
+    if (lightsToggle[i] == 3)
+    {
+      lightsToggle[i] = 0;
+    } 
+  }
 }
