@@ -46,6 +46,8 @@ int lights = 0;
 
 int choice[6] = {1, 2, 3, 1, 2, 3};
 
+int selected[2] = {9, 9};
+
 struct Point
 {
   int x; // coordinates of a dot
@@ -141,6 +143,7 @@ void loop()                     // run over and over again
   {
     Serial.print("Entered gamestate 3");
     selector();
+    redisplay();
     updateHealth();
     blinker();
     DisplaySlate();
@@ -281,6 +284,18 @@ void selector()
       hover = 3;
     }
   }  
+  CheckButtonsDown();
+  if(Button_A)
+  {
+    if (hover < 3)
+    {
+      selected[0] = hover;
+    }
+    if (hover > 2)
+    {
+      selected[0] = hover;
+    }
+  }
 }
 
 void blinker()
@@ -400,7 +415,7 @@ void blinker()
   {
     Serial.print("false to true");   
     lights = 0;
-  }
+  }  
 }
 
 void updateHealth()
@@ -437,4 +452,62 @@ void updateHealth()
   {
     SetAuxLEDs(225); 
   }  
+}
+
+void redisplay()
+{
+  for (int i = 0; i < 3; i++)
+  {
+    if (ReadPx(0, 3 * i + 1) == 0)
+    {
+      if (selected[0] != i)
+      {
+        if (choice[i] == 1)
+        {
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Green);
+        }
+        if (choice[i] == 2)
+        {
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Green);
+        }    
+        if (choice[i] == 3)
+        {
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y, Green);
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Green);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Green);
+        }          
+      }
+    }
+  }
+  for (int i = 3; i < 6; i++)
+  {
+    if (ReadPx(3, 3 * i - 8) == 0)
+    {
+      if (selected[1] != i)
+      {
+        if (choice[i] == 1)
+        {
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y, Red);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Red);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Red);
+        }
+        if (choice[i] == 2)
+        {
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y, Red);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+        }    
+        if (choice[i] == 3)
+        {
+          DrawPx(Locations[i].p1.x, Locations[i].p1.y - 1, Red);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y, Red);
+          DrawPx(Locations[i].p1.x + 1, Locations[i].p1.y - 1, Red);
+        }          
+      } 
+    }
+  }
 }
