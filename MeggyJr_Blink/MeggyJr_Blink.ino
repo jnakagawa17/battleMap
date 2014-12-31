@@ -39,17 +39,18 @@
 
 #include <MeggyJrSimple.h>    // Required code, line 1 of 2.
 int gameState = 2;
-int hover = 0;
+int hover = 6;
 int paused = 0;
 int savedState = 0;
 int lightsHover = 0;
 int placeHolder = 0;
+int section = 0;
 
 int lightsToggle[2] = {0, 0};
 
 int choice[6] = {1, 2, 3, 1, 2, 3};
 
-int selected[2] = {9, 9};
+int selected[2] = {9, 10};
 
 struct Point
 {
@@ -74,6 +75,10 @@ struct Space
   Point p4;
 };
 
+Point attackButton = {7, 6};
+Point healButton = {7, 4};
+Point defenseButton = {7, 2};
+
 Class t1 = {0, 0, 0, 0, {0, 7}};
 Class t2 = {0, 0, 0, 0, {0, 4}};
 Class t3 = {0, 0, 0, 0, {0, 1}};
@@ -85,45 +90,22 @@ Class Locations[6] = {t1, t2, t3, t4, t5, t6};
 
 int field[6];
 /*
-struct Light
-{
-  int health;
-  int defense;
-  int attack;
-  int availability; 
-  Point p1;
-  Point p2;
-};
-
-struct Special
-{
-  int health;
-  int defense;
-  int attack;
-  int availability; 
-  Point p1;
-  Point p2;
-  Point p3;
-};
-
-Light l1 = {8, 6, 3, 1, {0, 7}, {1, 7}};
-Light l2 = {8, 6, 3, 1, {0, 4}, {1, 4}};
-Light l3 = {8, 6, 3, 1, {0, 1}, {1, 1}};
-Light l4 = {8, 6, 3, 1, {3, 7}, {4, 7}};
-Light l5 = {8, 6, 3, 1, {3, 4}, {4, 4}};
-Light l6 = {8, 6, 3, 1, {3, 1}, {4, 1}};
-
-Special s1 = {8, 6, 3, 1, {0, 7}, {0, 6}, {1, 6}};
-Special s2 = {8, 6, 3, 1, {0, 3}, {0, 4}, {1, 3}};
-Special s3 = {8, 6, 3, 1, {0, 0}, {0, 1}, {1, 0}};
-Special s4 = {8, 6, 3, 1, {3, 6}, {4, 7}, {4, 6}};
-Special s5 = {8, 6, 3, 1, {3, 3}, {4, 3}, {4, 4}};
-Special s6 = {8, 6, 3, 1, {3, 0}, {4, 0}, {4, 1}};
-
-
-Light scoutLocation[6] = {l1, l2, l3, l4, l5, l6};
-
-Special mageLocations[6] = {s1, s2, s3, s4, s5, s6};
+    if (Button_Right)
+    {
+      hover = hover + 3;
+      if (hover > 5)
+      {
+        hover = hover - 3;
+      }
+    }
+    if (Button_Left)
+    {
+      hover = hover - 3;
+      if (hover < 0)
+      {
+        hover = hover + 3;
+      }
+    }
 */
 
 void setup()                    // run once, when the sketch starts
@@ -139,6 +121,7 @@ void loop()                     // run over and over again
     initializeLocations();
     initializeStats();
     initializeHealth();
+    initializeButtons();
     DisplaySlate();
     gameState = 3;
   }
@@ -245,71 +228,181 @@ void initializeHealth()
   }  
 }
 
+void initializeButtons()
+{
+  DrawPx(attackButton.x, attackButton.y, Red);
+  DrawPx(healButton.x, healButton.y, Green);
+  DrawPx(defenseButton.x, defenseButton.y, Blue); 
+}
+
 void selector()
 {
-  CheckButtonsDown();
-  if (Button_Right)
+  Serial.print(selected[1]);  
+  Serial.print("selector");  
+  if (section == 0)
   {
-    hover = hover + 3;
-    if (hover > 5)
-    {
-      hover = hover - 3;
-    }
-  }
-  if (Button_Left)
-  {
-    hover = hover - 3;
-    if (hover < 0)
-    {
-      hover = hover + 3;
-    }
-  }
-  if (Button_Up)
-  {
-    hover = hover - 1;
-    if (hover < 0)
-    {
-      hover = hover + 1;
-    }
-    if (hover == 2)
-    {
-      hover = 4;
-    }
-  }
-  if (Button_Down)
-  {
-    hover = hover + 1;
-    if (hover > 5)
+    CheckButtonsDown();
+    if (Button_Up)
     {
       hover = hover - 1;
+      if (hover < 6)
+      {
+        hover = hover + 1;
+      }
     }
-    if (hover == 3)
+    if (Button_Down)
     {
-      hover = 3;
+      hover = hover + 1;
+      if (hover > 9)
+      {
+        hover = hover - 1;
+      }
+    }  
+    if (Button_A)
+    {
+      if (hover == 6)
+      {
+        section = 3;
+        hover = 3;
+      }
+      if (hover == 7)
+      {
+        section = 5;
+        hover = 0;
+      }
+      if (hover == 8)
+      {
+        section = 7;
+        hover = 0;
+      }
     }
-  }  
-  CheckButtonsDown();
-  if(Button_A)
+  }
+  if (section == 2)
   {
-    Serial.print("button A");   
-    Serial.print("");     
-    if (hover < 3)
+    CheckButtonsDown();
+    if (Button_Up)
     {
-      selected[0] = hover;
-      Serial.print(selected[0]);   
-      Serial.print("");  
+      hover = hover - 1;
+      if (hover == 2)
+      {
+        hover = 3;
+      }
     }
-    if (hover > 2)
+    if (Button_Down)
     {
-      selected[1] = hover;
-      Serial.print(selected[1]);   
-      Serial.print(""); 
+      hover = hover + 1;
+      if (hover > 5)
+      {
+        hover = hover - 1;
+      }
+    }  
+    if(Button_A)
+    {  
+      if (hover > 2)
+      {
+        selected[1] = hover;
+      }
     }
+    if (Button_B)
+    {
+      section = 1;
+      hover = 6;
+    }
+  }
+  if (section == 4)
+  {
+    CheckButtonsDown();
+    if (Button_Up)
+    {
+      hover = hover - 1;
+      if (hover < 0)
+      {
+        hover = hover + 1;
+      }
+    }
+    if (Button_Down)
+    {
+      hover = hover + 1;
+      if (hover == 3)
+      {
+        hover = hover - 1;
+      }
+    }  
+    if(Button_A)
+    {  
+      if (hover < 3)
+      {
+        selected[0] = hover;
+      }
+      if (hover > 2)
+      {
+        selected[1] = hover;
+      }
+    }
+    if (Button_B)
+    {
+      section = 1;
+      hover = 6;
+    }
+  }
+  if (section == 6)
+  {
+    CheckButtonsDown();
+    if (Button_Up)
+    {
+      hover = hover - 1;
+      if (hover < 0)
+      {
+        hover = hover + 1;
+      }
+    }
+    if (Button_Down)
+    {
+      hover = hover + 1;
+      if (hover == 3)
+      {
+        hover = hover - 1;
+      }
+    }  
+    if(Button_A)
+    {  
+      if (hover < 3)
+      {
+        selected[0] = hover;
+      }
+      if (hover > 2)
+      {
+        selected[1] = hover;
+      }
+    }
+    if (Button_B)
+    {
+      section = 1;
+      hover = 6;
+    }
+  }
+  if (section == 1)
+  {
+    section = 0;
+  }
+  if (section == 3)
+  {
+    section = 2;
+  }
+  if (section == 5)
+  {
+    section = 4;
+  }
+  if (section == 7)
+  {
+    section = 6;
   }
 }
 
 void blinker()
 {
+  Serial.print(selected[1]);  
+  Serial.print("blinker");  
   if (hover < 3)
   {
     if (lightsHover == 0)
@@ -363,51 +456,93 @@ void blinker()
   }
   if (hover > 2)
   {
-    if (lightsHover == 0)
+    if (hover < 7)
     {
-      if (choice[hover] == 1)
+      if (lightsHover == 0)
       {
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Red);
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Red);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Red);
-        lightsHover = 1;
+        if (choice[hover] == 1)
+        {
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Red);
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Red);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Red);
+          lightsHover = 1;
+        }
+        if (choice[hover] == 2)
+        {
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Red);
+          lightsHover = 1;
+        }
+        if (choice[hover] == 3)
+        {
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Red);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Red);
+          lightsHover = 1;
+        }
       }
-      if (choice[hover] == 2)
+      if (lightsHover == 2)
       {
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, Red);
-        lightsHover = 1;
-      }
-      if (choice[hover] == 3)
-      {
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, Red);
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, Red);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, Red);
-        lightsHover = 1;
+        if (choice[hover] == 1)
+        {
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0);
+          lightsHover = 3;
+        }
+        if (choice[hover] == 2)
+        {
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);
+          lightsHover = 3;
+        }
+        if (choice[hover] == 3)
+        {
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
+          DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
+          DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0);
+          lightsHover = 3;
+        }
       }
     }
-    if (lightsHover == 2)
+    if (hover == 6)
     {
-      if (choice[hover] == 1)
+      if (lightsHover == 0)
       {
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0);
+        DrawPx(attackButton.x, attackButton.y, Red); 
+        lightsHover = 1;
+      }
+      if (lightsHover == 2)
+      {
+        DrawPx(attackButton.x, attackButton.y, 0); 
         lightsHover = 3;
       }
-      if (choice[hover] == 2)
+    }
+    if (hover == 7)
+    {
+      if (lightsHover == 0)
       {
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y, 0);
+        DrawPx(healButton.x, healButton.y, Green); 
+        lightsHover = 1;
+      }
+      if (lightsHover == 2)
+      {
+        DrawPx(healButton.x, healButton.y, 0); 
         lightsHover = 3;
       }
-      if (choice[hover] == 3)
+    }
+    if (hover == 8)
+    {
+      if (lightsHover == 0)
       {
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y, 0);
-        DrawPx(Locations[hover].p1.x, Locations[hover].p1.y - 1, 0);
-        DrawPx(Locations[hover].p1.x + 1, Locations[hover].p1.y - 1, 0);
+        DrawPx(defenseButton.x, defenseButton.y, Blue); 
+        lightsHover = 1;
+      }
+      if (lightsHover == 2)
+      {
+        DrawPx(defenseButton.x, defenseButton.y, 0); 
         lightsHover = 3;
       }
     }
@@ -424,6 +559,8 @@ void blinker()
 
 void updateHealth()
 {
+  Serial.print(selected[1]);  
+  Serial.print("updateHealth");  
   if (Locations[hover].health == 1)
   {
     SetAuxLEDs(1); 
@@ -460,6 +597,8 @@ void updateHealth()
 
 void redisplay()
 {
+  Serial.print(selected[1]);  
+  Serial.print("redisplay");  
   for (int i = 0; i < 3; i++)
   {
     if (ReadPx(0, 7 - (3 * i)) == 0)
@@ -514,11 +653,34 @@ void redisplay()
       } 
     }
   }
- DisplaySlate(); 
+  for (int i = 1; i < 4; i++)
+  {
+    if (ReadPx(7, 2 * i) == 0)
+    {
+      if (hover != 9 - i)
+      {
+        if (i == 3)
+        {
+          DrawPx(7, 2 * i, Red);
+        }
+        if (i == 2)
+        {
+          DrawPx(7, 2 * i, Green);
+        }
+        if (i == 1)
+        {
+          DrawPx(7, 2 * i, Blue);
+        }
+      }
+    }
+  }
+  DisplaySlate(); 
 }
 
 void checkLights()
 {
+  Serial.print(selected[1]);  
+  Serial.print("checkLights");  
   for (int i = 0; i < 2; i++)
   {
     if (selected[i] < 7)
@@ -537,6 +699,8 @@ void checkLights()
 
 void rotate()
 {
+  Serial.print(selected[1]);  
+  Serial.print("rotate");  
   for (int i = 0; i < 2; i++)
   {
     if (selected[i] < 7)
@@ -546,13 +710,9 @@ void rotate()
         if (selected[i] < 3)
         {
           if (lightsToggle[i] == 0)
-          {
-            Serial.print("made it");   
-            Serial.print("");  
+          { 
             if (choice[selected[i]] == 1)
             {
-              Serial.print("1");   
-              Serial.print(""); 
               DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Green);
               DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, Green);
               DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, Green);
@@ -561,17 +721,12 @@ void rotate()
             }
             if (choice[selected[i]] == 2)
             {
-              Serial.print("2");   
-              Serial.print(""); 
               DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Green);
               DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y, Green);  
               lightsToggle[i] = 1;
             }
             if (choice[selected[i]] == 3)
-            {
-              Serial.print("3");   
-              Serial.print(selected[i]); 
-              Serial.print(i); 
+            { 
               DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y, Green);
               DrawPx(Locations[selected[i]].p1.x, Locations[selected[i]].p1.y - 1, Green);
               DrawPx(Locations[selected[i]].p1.x + 1, Locations[selected[i]].p1.y - 1, Green);
@@ -665,4 +820,8 @@ void rotate()
       lightsToggle[i] = 0;
     } 
   }
+}
+
+void attack()
+{
 }
