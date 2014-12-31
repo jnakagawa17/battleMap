@@ -822,6 +822,15 @@ void rotate()
   }
 }
 
-void attack()
+void attackCalculations()
 {
+  if (selected[1] < 6)
+  {
+    Locations[selected[1]].health = Locations[selected[1]].health - Locations[selected[0]].attack + Locations[selected[1]].defense; 
+  }
+}
+
+void attackAnimation()
+{
+  
 }
