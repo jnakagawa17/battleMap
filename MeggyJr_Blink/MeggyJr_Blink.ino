@@ -45,6 +45,7 @@ int savedState = 0;
 int lightsHover = 0;
 int placeHolder = 0;
 int section = 0;
+int availabilityCounter = 0; 
 
 int lightsToggle[2] = {0, 0};
 
@@ -82,9 +83,9 @@ Point defenseButton = {7, 2};
 Class t1 = {0, 0, 0, 0, {0, 7}};
 Class t2 = {0, 0, 0, 0, {0, 4}};
 Class t3 = {0, 0, 0, 0, {0, 1}};
-Class t4 = {0, 0, 0, 0, {3, 7}};
-Class t5 = {0, 0, 0, 0, {3, 4}};
-Class t6 = {0, 0, 0, 0, {3, 1}};
+Class t4 = {0, 0, 0, 0, {4, 7}};
+Class t5 = {0, 0, 0, 0, {4, 4}};
+Class t6 = {0, 0, 0, 0, {4, 1}};
 
 Class Locations[6] = {t1, t2, t3, t4, t5, t6};
 
@@ -135,6 +136,10 @@ void loop()                     // run over and over again
     rotate();
     DisplaySlate();
     delay(500);
+    endTurn();
+  }
+  if (gameState == 4)
+  {
   }
 }
 
@@ -253,7 +258,7 @@ void selector()
     if (Button_Down)
     {
       hover = hover + 1;
-      if (hover > 9)
+      if (hover > 8)
       {
         hover = hover - 1;
       }
@@ -826,11 +831,45 @@ void attackCalculations()
 {
   if (selected[1] < 6)
   {
-    Locations[selected[1]].health = Locations[selected[1]].health - Locations[selected[0]].attack + Locations[selected[1]].defense; 
+    placeHolder = Locations[selected[1]].health - Locations[selected[0]].attack + Locations[selected[1]].defense; 
+    if (placeHolder < Locations[selected[1]].health)
+    {
+      Locations[selected[1]].health = placeHolder; 
+    }
   }
+}
+
+void defenseCalculations()
+{
+  Locations[selected[0]].defense = Locations[selected[0]].defense + 2;
 }
 
 void attackAnimation()
 {
-  
+
+}
+
+void healingCalculations()
+{
+  Locations[selected[0]].health = Locations[selected[0]].health + 1;
+  if (Locations[selected[0]].health > 8)
+  {
+    Locations[selected[0]].health = 8;
+  }
+}
+
+void endTurn()
+{
+  availabilityCounter = 0;
+  for (int i = 0; i < 3; i++)
+  {
+    if (Locations[i].availability == 0)
+    {
+      availabilityCounter = availabilityCounter + 1;
+    }
+  }
+  if (availabilityCounter == 3)
+  {
+    gameState = 4;
+  }
 }
