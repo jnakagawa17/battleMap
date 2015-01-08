@@ -51,7 +51,7 @@ int lightsToggle[2] = {0, 0};
 
 int choice[6] = {1, 2, 3, 1, 2, 3};
 
-int selected[2] = {9, 10};
+int selected[2] = {0, 10};
 
 int defended[6] = {0, 0, 0, 0, 0, 0};
 
@@ -303,6 +303,7 @@ void selector()
       if (hover > 2)
       {
         selected[1] = hover;
+        attackCalculations();
       }
     }
     if (Button_B)
@@ -871,6 +872,9 @@ void attackCalculations()
     }
   }
   selected[0] = selected[0] + 1; 
+  selected[1] = 10;
+  section = 0;
+  hover = 6;
 }
 
 void defenseCalculations()
@@ -878,6 +882,9 @@ void defenseCalculations()
   Locations[selected[0]].defense = Locations[selected[0]].defense + 2;
   defended[selected[0]] = 1;
   selected[0] = selected[0] + 1; 
+  selected[1] = 10;
+  section = 0;
+  hover = 6; 
 }
 
 void attackAnimation()
@@ -910,6 +917,9 @@ void healingCalculations()
     }
   }
   selected[0] = selected[0] + 1; 
+  selected[1] = 10;
+  section = 0;
+  hover = 6;
 }
 
 void endTurn()
