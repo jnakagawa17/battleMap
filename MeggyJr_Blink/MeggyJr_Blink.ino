@@ -1,4 +1,4 @@
-/*
+j/*
   MeggyJr_Blink.pde
  
  Example file using the The Meggy Jr Simplified Library (MJSL)
@@ -103,6 +103,10 @@ void setup()                    // run once, when the sketch starts
 
 void loop()                     // run over and over again
 {
+  if (gameState == 0)
+  {
+    checkPress();
+  }
   if (gameState == 2)
   {
     initializeLocations();
@@ -134,6 +138,15 @@ void loop()                     // run over and over again
     resetDefense();
     checkLose();
     resetStats();
+  }
+}
+
+void checkPress()
+{
+  CheckButtonsDown();
+  if (Button_A)
+  {
+    gameState = 1;
   }
 }
 
@@ -339,6 +352,7 @@ void selector() // allows you to change which character you have selected by pre
           hover = hover - 2;
         }
       }
+      
     }
     if (Button_Down)
     {
@@ -684,7 +698,7 @@ void updateHealth() // displays the health of the character you are hovering ove
   }
   if (Locations[hover].health == 8)
   {
-    SetAuxLEDs(225); 
+    SetAuxLEDs(255); 
   }  
 }
 
